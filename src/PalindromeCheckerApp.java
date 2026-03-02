@@ -1,9 +1,16 @@
 import java.util.Scanner;
-import java.util.Stack;
-import java.util.Queue;
-import java.util.LinkedList;
 
 public class PalindromeCheckerApp {
+
+    static class Node {
+        char data;
+        Node next;
+
+        Node(char data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
 
     public static void main(String[] args) {
 
@@ -12,25 +19,71 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        Stack<Character> stack = new Stack<>();
-        Queue<Character> queue = new LinkedList<>();
+        Node head = null;
+        Node tail = null;
 
         for (char ch : input.toCharArray()) {
-            queue.add(ch);
-            stack.push(ch);
-        }
-
-        boolean isPalindrome = true;
-
-        while (!queue.isEmpty()) {
-            if (!queue.remove().equals(stack.pop())) {
-                isPalindrome = false;
-                break;
+            Node newNode = new Node(ch);
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
             }
         }
+
+        boolean isPalindrome = checkPalindrome(head);
 
         System.out.println("Is it a palindrome: " + (isPalindrome ? "True" : "False"));
 
         scanner.close();
+    }
+
+    static boolean checkPalindrome(Node head) {
+
+        if (head == null || head.next == null)
+            return true;
+
+        Node slow = head;
+        Node fast = head;
+
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        Node secondHalf = reverse(slow.next);
+        Node firstHalf = head;
+
+        Node temp = secondHalf;
+        boolean result = true;
+
+        while (temp != null) {
+            if (firstHalf.data != temp.data) {
+                result = false;
+                break;
+            }
+            firstHalf = firstHalf.next;
+            temp = temp.next;
+        }
+
+        slow.next = reverse(secondHalf);
+
+        return result;
+    }
+
+    static Node reverse(Node head) {
+        Node prev = null;
+        Node current = head;
+
+        while (current != null) {
+            Node next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        return prev;
     }
 }
