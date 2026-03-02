@@ -9,7 +9,9 @@ public class PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        boolean isPalindrome = checkPalindrome(input, 0, input.length() - 1);
+        String normalized = input.replaceAll("\\s+", "").toLowerCase();
+
+        boolean isPalindrome = checkPalindrome(normalized, 0, normalized.length() - 1);
 
         System.out.println("Is it a palindrome: " + (isPalindrome ? "True" : "False"));
 
